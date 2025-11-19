@@ -15,7 +15,7 @@ export default function CadastroPage() {
     setLoading(true);
 
     try {
-      // FUTURO: enviar para /auth/register no backend com FormData se for mandar o arquivo
+      // FUTURO: aqui vamos enviar isso para o backend / banco
       console.log("Cadastro enviado:", {
         nome,
         email,
@@ -24,7 +24,7 @@ export default function CadastroPage() {
         screenshotName: screenshot?.name,
       });
       alert(
-        "Cadastro enviado (simulação). Depois ligamos isso na API real e faremos upload do print 😄"
+        "Cadastro enviado (simulação). Depois ligamos isso na API real e salvamos no banco 😄"
       );
     } finally {
       setLoading(false);
@@ -111,9 +111,9 @@ export default function CadastroPage() {
               accept="image/*"
               className="w-full text-xs text-slate-300 file:mr-3 file:rounded-md file:border-0 file:bg-red-500 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-white hover:file:bg-red-600"
               onChange={(e) =>
-                setScreenshot(e.target.files && e.target.files[0]
-                  ? e.target.files[0]
-                  : null)
+                setScreenshot(
+                  e.target.files && e.target.files[0] ? e.target.files[0] : null
+                )
               }
             />
             <p className="text-[11px] text-slate-400">
