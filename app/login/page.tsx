@@ -1,20 +1,44 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import { useRouter } from "next/navigation";
+
+const API_URL =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 export default function LoginPage() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
+    if (loading) return;
     setLoading(true);
 
     try {
-      // FUTURO: aqui vamos chamar a API real de login
-      console.log("Login enviado:", { email, senha });
-      alert("Login enviado (simulação). Depois ligamos na API real 😄");
+      const res = await fetch(`${API_URL}/api/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, senha }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.error || "Erro ao fazer login.");
+        return;
+      }
+
+      alert("Login realizado com sucesso! (demo)");
+      // FUTURO: salvar token / dados do usuário
+      router.push("/painel");
+    } catch (err) {
+      console.error(err);
+      alert("Erro ao fazer login. Tente novamente.");
     } finally {
       setLoading(false);
     }
