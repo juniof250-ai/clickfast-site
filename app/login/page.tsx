@@ -12,9 +12,7 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      // FUTURO: aqui vamos chamar a API do backend no Render:
-      // const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/login`, { ... })
-
+      // FUTURO: aqui vamos chamar a API real de login
       console.log("Login enviado:", { email, senha });
       alert("Login enviado (simulação). Depois ligamos na API real 😄");
     } finally {
@@ -27,7 +25,8 @@ export default function LoginPage() {
       <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-4">
         <h1 className="mb-2 text-2xl font-bold">Entrar no Click Fast PRO</h1>
         <p className="mb-6 text-sm text-slate-300">
-          Use o e-mail e senha cadastrados para acessar o painel e fazer download da automação.
+          Use o e-mail e senha cadastrados para acessar o painel e fazer download da
+          automação.
         </p>
 
         <form
