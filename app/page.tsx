@@ -309,7 +309,8 @@ export default function HomePage() {
         <section id="como-funciona" className="pb-16">
           <h2 className="mb-4 text-2xl font-bold md:text-3xl">Como funciona</h2>
           <p className="mb-6 max-w-2xl text-sm text-slate-300">
-            Em poucos passos você baixa, instala e já começa a automatizar seus pedidos.
+            Em poucos passos você baixa, instala e já começa a automatizar seus
+            pedidos.
           </p>
 
           <ol className="space-y-4 text-sm">
@@ -344,8 +345,8 @@ export default function HomePage() {
               <div>
                 <h3 className="font-semibold">Importe sua planilha</h3>
                 <p className="text-slate-300">
-                  Carregue a planilha com códigos, quantidades e preços. O Click Fast PRO
-                  valida os dados antes de começar.
+                  Carregue a planilha com códigos, quantidades e preços. O Click Fast
+                  PRO valida os dados antes de começar.
                 </p>
               </div>
             </li>
@@ -354,7 +355,7 @@ export default function HomePage() {
                 4
               </span>
               <div>
-                <h3 className="font-semibold">Clique em "Fast Start"</h3>
+                <h3 className="font-semibold">Clique em &quot;Fast Start&quot;</h3>
                 <p className="text-slate-300">
                   A automação preenche o portal da empresa para você, linha a linha,
                   enquanto você acompanha o log em tempo real.
