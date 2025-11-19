@@ -1,9 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 export default function HomePage() {
-  const [selectedPlan, setSelectedPlan] = useState<"mensal" | "trimestral" | "anual">("anual");
+  const [selectedPlan, setSelectedPlan] = useState<
+    "mensal" | "trimestral" | "anual"
+  >("anual");
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const baseCard =
     "flex flex-col rounded-2xl bg-slate-900/70 p-6 cursor-pointer transition border";
@@ -28,7 +32,7 @@ export default function HomePage() {
             </span>
           </div>
 
-          {/* Menu */}
+          {/* Menu desktop */}
           <nav className="hidden items-center gap-6 text-sm font-medium text-slate-200 md:flex">
             <a href="#como-funciona" className="hover:text-white">
               Como funciona
@@ -36,20 +40,62 @@ export default function HomePage() {
             <a href="#suporte" className="hover:text-white">
               Suporte
             </a>
-            <a
-              href="#cadastro"
+            <Link
+              href="/cadastro"
               className="rounded-full border border-slate-600 px-4 py-1.5 text-xs hover:border-slate-300"
             >
               Cadastro
-            </a>
-            <a
-              href="#login"
+            </Link>
+            <Link
+              href="/login"
               className="rounded-full bg-red-500 px-4 py-1.5 text-xs font-semibold text-white hover:bg-red-600"
             >
               Login
-            </a>
+            </Link>
           </nav>
+
+          {/* Botão mobile */}
+          <button
+            className="inline-flex items-center justify-center rounded-lg border border-slate-700 px-3 py-1 text-sm text-slate-200 hover:border-slate-400 md:hidden"
+            onClick={() => setMobileOpen((prev) => !prev)}
+          >
+            {mobileOpen ? "Fechar" : "Menu"}
+          </button>
         </div>
+
+        {/* Menu mobile aberto */}
+        {mobileOpen && (
+          <nav className="mx-auto flex max-w-6xl flex-col gap-2 border-t border-slate-800 px-4 pb-3 pt-2 text-sm font-medium text-slate-200 md:hidden">
+            <a
+              href="#como-funciona"
+              className="rounded-lg px-2 py-1 hover:bg-slate-800"
+              onClick={() => setMobileOpen(false)}
+            >
+              Como funciona
+            </a>
+            <a
+              href="#suporte"
+              className="rounded-lg px-2 py-1 hover:bg-slate-800"
+              onClick={() => setMobileOpen(false)}
+            >
+              Suporte
+            </a>
+            <Link
+              href="/cadastro"
+              className="rounded-lg px-2 py-1 hover:bg-slate-800"
+              onClick={() => setMobileOpen(false)}
+            >
+              Cadastro
+            </Link>
+            <Link
+              href="/login"
+              className="rounded-lg px-2 py-1 text-red-300 hover:bg-slate-800"
+              onClick={() => setMobileOpen(false)}
+            >
+              Login
+            </Link>
+          </nav>
+        )}
       </header>
 
       <main className="mx-auto max-w-6xl px-4 pb-16 pt-10 lg:px-0">
@@ -179,16 +225,14 @@ export default function HomePage() {
 
               <div className="mt-4 space-y-1 text-xs text-slate-300">
                 <p>
-                  • <strong>R$ 6.600,00</strong> em até 12x no cartão
-                  {" — "}
+                  • <strong>R$ 6.600,00</strong> em até 12x no cartão —{" "}
                   <span className="text-emerald-300">
                     R$ 1.200,00 de desconto comparado ao mensal
                   </span>
                   .
                 </p>
                 <p>
-                  • <strong>R$ 6.000,00</strong> em até 4x no cartão
-                  {" — "}
+                  • <strong>R$ 6.000,00</strong> em até 4x no cartão —{" "}
                   <span className="text-emerald-300">
                     R$ 1.800,00 de desconto comparado ao plano mensal
                   </span>
@@ -237,8 +281,7 @@ export default function HomePage() {
                 <p className="text-xs text-slate-400">/ mês por usuário</p>
 
                 <p className="mt-3 text-xs text-slate-300">
-                  ou <strong>R$ 1.700,00</strong> em pagamento único
-                  {" — "}
+                  ou <strong>R$ 1.700,00</strong> em pagamento único —{" "}
                   <span className="text-emerald-300">
                     desconto de R$ 250,00 comparado ao mensal
                   </span>
@@ -277,7 +320,8 @@ export default function HomePage() {
               <div>
                 <h3 className="font-semibold">Download e cadastro</h3>
                 <p className="text-slate-300">
-                  Crie seu cadastro no site, escolha o plano e baixe o instalador do Click Fast PRO.
+                  Crie seu cadastro no site, escolha o plano e baixe o instalador do
+                  Click Fast PRO.
                 </p>
               </div>
             </li>
@@ -288,8 +332,8 @@ export default function HomePage() {
               <div>
                 <h3 className="font-semibold">Instalação no Windows</h3>
                 <p className="text-slate-300">
-                  Execute o instalador, faça login com seu usuário e deixe o Chrome preparado como o
-                  sistema orienta.
+                  Execute o instalador, faça login com seu usuário e deixe o Chrome
+                  preparado como o sistema orienta.
                 </p>
               </div>
             </li>
@@ -300,8 +344,8 @@ export default function HomePage() {
               <div>
                 <h3 className="font-semibold">Importe sua planilha</h3>
                 <p className="text-slate-300">
-                  Carregue a planilha com códigos, quantidades e preços. O Click Fast PRO valida os
-                  dados antes de começar.
+                  Carregue a planilha com códigos, quantidades e preços. O Click Fast PRO
+                  valida os dados antes de começar.
                 </p>
               </div>
             </li>
@@ -312,8 +356,8 @@ export default function HomePage() {
               <div>
                 <h3 className="font-semibold">Clique em "Fast Start"</h3>
                 <p className="text-slate-300">
-                  A automação preenche o portal da empresa para você, linha a linha, enquanto você
-                  acompanha o log em tempo real.
+                  A automação preenche o portal da empresa para você, linha a linha,
+                  enquanto você acompanha o log em tempo real.
                 </p>
               </div>
             </li>
@@ -346,8 +390,8 @@ export default function HomePage() {
                 Como configurar o Chrome para o Click Fast PRO
               </h3>
               <p className="mt-2 text-slate-300">
-                Passo a passo de como criar o atalho com porta de depuração e garantir que a automação
-                conecte certinho.
+                Passo a passo de como criar o atalho com porta de depuração e garantir
+                que a automação conecte certinho.
               </p>
             </div>
 
@@ -367,34 +411,11 @@ export default function HomePage() {
                 Fale com o suporte
               </p>
               <p className="mt-2 text-slate-300">
-                Não achou sua resposta no fórum? Abra um ticket com print e descrição do problema que
-                a equipe responde pra você.
+                Não achou sua resposta no fórum? Abra um ticket com print e descrição do
+                problema que a equipe responde pra você.
               </p>
             </div>
           </div>
-        </section>
-
-        {/* CADASTRO / LOGIN */}
-        <section
-          id="cadastro"
-          className="mb-8 rounded-2xl border border-slate-800 bg-slate-900/70 p-6 text-sm"
-        >
-          <h2 className="text-lg font-semibold">Cadastro</h2>
-          <p className="mt-2 text-slate-300">
-            Aqui ficará o formulário de criação de conta (nome, e-mail, senha e código do
-            representante). Depois vamos ligar isso no backend e no sistema de licenças.
-          </p>
-        </section>
-
-        <section
-          id="login"
-          className="rounded-2xl border border-slate-800 bg-slate-900/70 p-6 text-sm"
-        >
-          <h2 className="text-lg font-semibold">Login</h2>
-          <p className="mt-2 text-slate-300">
-            Área para o usuário entrar com e-mail e senha, validar licença e acessar o painel de
-            downloads.
-          </p>
         </section>
 
         {/* FOOTER */}
