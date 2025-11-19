@@ -1,8 +1,14 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import { useRouter } from "next/navigation";
+
+const API_URL =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 export default function CadastroPage() {
+  const router = useRouter();
+
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
@@ -12,20 +18,38 @@ export default function CadastroPage() {
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
+    if (loading) return;
     setLoading(true);
 
     try {
-      // FUTURO: aqui vamos enviar isso para o backend / banco
-      console.log("Cadastro enviado:", {
-        nome,
-        email,
-        senha,
-        nomeRepPortal,
-        screenshotName: screenshot?.name,
+      const formData = new FormData();
+      formData.append("nome", nome);
+      formData.append("email", email);
+      formData.append("senha", senha);
+      formData.append("nomeRepresentante", nomeRepPortal);
+      if (screenshot) {
+        formData.append("screenshot", screenshot);
+      }
+
+      const res = await fetch(`${API_URL}/api/register`, {
+        method: "POST",
+        body: formData,
       });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.error || "Erro ao cadastrar.");
+        return;
+      }
+
       alert(
-        "Cadastro enviado (simulação). Depois ligamos isso na API real e salvamos no banco 😄"
+        "Cadastro realizado com sucesso! Já criamos um teste de 7 dias pra você. Agora faça login."
       );
+      router.push("/login");
+    } catch (err) {
+      console.error(err);
+      alert("Erro ao enviar cadastro. Tente novamente.");
     } finally {
       setLoading(false);
     }
@@ -38,7 +62,8 @@ export default function CadastroPage() {
         <p className="mb-6 text-sm text-slate-300">
           Preencha seus dados e o{" "}
           <span className="font-semibold">nome do representante no portal</span> para
-          ativar sua licença. Você também pode enviar um print para validação.
+          ativar sua licença de teste de 7 dias. Você também pode enviar um print
+          para validação.
         </p>
 
         <form
@@ -83,7 +108,6 @@ export default function CadastroPage() {
             />
           </div>
 
-          {/* Nome do representante no portal */}
           <div className="space-y-1">
             <label className="text-xs font-medium text-slate-200">
               Nome do representante no portal
@@ -101,7 +125,6 @@ export default function CadastroPage() {
             </p>
           </div>
 
-          {/* Upload de print */}
           <div className="space-y-1">
             <label className="text-xs font-medium text-slate-200">
               Print da tela do portal (opcional)
@@ -111,9 +134,7 @@ export default function CadastroPage() {
               accept="image/*"
               className="w-full text-xs text-slate-300 file:mr-3 file:rounded-md file:border-0 file:bg-red-500 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-white hover:file:bg-red-600"
               onChange={(e) =>
-                setScreenshot(
-                  e.target.files && e.target.files[0] ? e.target.files[0] : null
-                )
+                setScreenshot(e.target.files?.[0] ?? null)
               }
             />
             <p className="text-[11px] text-slate-400">
