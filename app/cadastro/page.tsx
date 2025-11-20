@@ -53,6 +53,7 @@ export default function CadastroPage() {
         let msg = "Erro ao enviar cadastro.";
         try {
           const err = await res.json();
+          if (err?.detail) msg = err.detail;
           if (err?.error) msg = err.error;
         } catch {
           // ignora erro ao ler json
@@ -65,14 +66,13 @@ export default function CadastroPage() {
       console.log("Cadastro OK:", data);
       alert("Cadastro realizado com sucesso!");
 
-      // limpa o formulário
       setNome("");
       setEmail("");
       setSenha("");
       setNomeRepPortal("");
       setScreenshot(null);
     } catch (error) {
-      console.error("Erro ao chamar backend:", error);
+      console.error("Erro ao conectar:", error);
       alert("Erro ao conectar com o servidor. Tente novamente.");
     } finally {
       setLoading(false);
@@ -93,9 +93,7 @@ export default function CadastroPage() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm mb-1">
-              Nome completo
-            </label>
+            <label className="block text-sm mb-1">Nome completo</label>
             <input
               type="text"
               value={nome}
@@ -106,9 +104,7 @@ export default function CadastroPage() {
           </div>
 
           <div>
-            <label className="block text-sm mb-1">
-              E-mail
-            </label>
+            <label className="block text-sm mb-1">E-mail</label>
             <input
               type="email"
               value={email}
@@ -119,9 +115,7 @@ export default function CadastroPage() {
           </div>
 
           <div>
-            <label className="block text-sm mb-1">
-              Senha
-            </label>
+            <label className="block text-sm mb-1">Senha</label>
             <input
               type="password"
               value={senha}
@@ -158,8 +152,7 @@ export default function CadastroPage() {
               className="w-full text-sm text-gray-300"
             />
             <p className="text-xs text-gray-500 mt-1">
-              Envie um print mostrando o nome do representante no
-              portal. Isso ajuda a validar seu acesso mais rápido.
+              Envie um print mostrando o nome do representante no portal.
             </p>
           </div>
 
