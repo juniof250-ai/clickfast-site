@@ -1,14 +1,16 @@
 "use client";
 
-import { FormEvent, useState } from "react";
-import { useRouter } from "next/navigation";
+import React, {
+  FormEvent,
+  ChangeEvent,
+  useState,
+} from "react";
 
-const API_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL ||
+  "https://clickfast-backend.onrender.com";
 
 export default function CadastroPage() {
-  const router = useRouter();
-
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
@@ -16,9 +18,19 @@ export default function CadastroPage() {
   const [screenshot, setScreenshot] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
 
+  function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0] || null;
+    setScreenshot(file);
+  }
+
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    if (loading) return;
+
+    if (!nome || !email || !senha || !nomeRepPortal) {
+      alert("Preencha todos os campos obrigatórios.");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -27,138 +39,151 @@ export default function CadastroPage() {
       formData.append("email", email);
       formData.append("senha", senha);
       formData.append("nomeRepresentante", nomeRepPortal);
+
       if (screenshot) {
         formData.append("screenshot", screenshot);
       }
 
-      const res = await fetch(`${API_URL}/api/register`, {
+      const res = await fetch(`${API_BASE_URL}/api/register`, {
         method: "POST",
         body: formData,
       });
 
-      const data = await res.json();
-
       if (!res.ok) {
-        alert(data.error || "Erro ao cadastrar.");
+        let msg = "Erro ao enviar cadastro.";
+        try {
+          const err = await res.json();
+          if (err?.error) msg = err.error;
+        } catch {
+          // ignora erro ao ler json
+        }
+        alert(msg);
         return;
       }
 
-      alert(
-        "Cadastro realizado com sucesso! Já criamos um teste de 7 dias pra você. Agora faça login."
-      );
-      router.push("/login");
-    } catch (err) {
-      console.error(err);
-      alert("Erro ao enviar cadastro. Tente novamente.");
+      const data = await res.json();
+      console.log("Cadastro OK:", data);
+      alert("Cadastro realizado com sucesso!");
+
+      // limpa o formulário
+      setNome("");
+      setEmail("");
+      setSenha("");
+      setNomeRepPortal("");
+      setScreenshot(null);
+    } catch (error) {
+      console.error("Erro ao chamar backend:", error);
+      alert("Erro ao conectar com o servidor. Tente novamente.");
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-50">
-      <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-4">
-        <h1 className="mb-2 text-2xl font-bold">Criar conta no Click Fast PRO</h1>
-        <p className="mb-6 text-sm text-slate-300">
-          Preencha seus dados e o{" "}
-          <span className="font-semibold">nome do representante no portal</span> para
-          ativar sua licença de teste de 7 dias. Você também pode enviar um print
-          para validação.
+    <main className="min-h-screen flex items-center justify-center bg-[#050509] text-white px-4">
+      <div className="w-full max-w-md bg-[#0b0b15] border border-[#222] rounded-xl p-8 shadow-lg">
+        <h1 className="text-2xl font-semibold mb-2">
+          Criar conta no Click Fast PRO
+        </h1>
+        <p className="text-sm text-gray-400 mb-6">
+          Preencha seus dados e o nome do representante no portal
+          para ativar sua licença de teste de 7 dias. Você também
+          pode enviar um print para validação.
         </p>
 
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-4 rounded-2xl border border-slate-800 bg-slate-900/70 p-6"
-        >
-          <div className="space-y-1">
-            <label className="text-xs font-medium text-slate-200">
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm mb-1">
               Nome completo
             </label>
             <input
               type="text"
-              required
-              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm outline-none focus:border-red-500"
               value={nome}
               onChange={(e) => setNome(e.target.value)}
-              placeholder="Seu nome"
+              className="w-full rounded-md bg-[#111321] border border-[#333] px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
+              placeholder="Seu nome completo"
             />
           </div>
 
-          <div className="space-y-1">
-            <label className="text-xs font-medium text-slate-200">E-mail</label>
+          <div>
+            <label className="block text-sm mb-1">
+              E-mail
+            </label>
             <input
               type="email"
-              required
-              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm outline-none focus:border-red-500"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              className="w-full rounded-md bg-[#111321] border border-[#333] px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
               placeholder="seuemail@exemplo.com"
             />
           </div>
 
-          <div className="space-y-1">
-            <label className="text-xs font-medium text-slate-200">Senha</label>
+          <div>
+            <label className="block text-sm mb-1">
+              Senha
+            </label>
             <input
               type="password"
-              required
-              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm outline-none focus:border-red-500"
               value={senha}
               onChange={(e) => setSenha(e.target.value)}
-              placeholder="Crie uma senha"
+              className="w-full rounded-md bg-[#111321] border border-[#333] px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
+              placeholder="Digite uma senha segura"
             />
           </div>
 
-          <div className="space-y-1">
-            <label className="text-xs font-medium text-slate-200">
+          <div>
+            <label className="block text-sm mb-1">
               Nome do representante no portal
             </label>
             <input
               type="text"
-              required
-              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm outline-none focus:border-red-500"
               value={nomeRepPortal}
               onChange={(e) => setNomeRepPortal(e.target.value)}
-              placeholder="Ex: JUNIO J M DA CUNHA"
+              className="w-full rounded-md bg-[#111321] border border-[#333] px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
+              placeholder="Digite exatamente como aparece no portal"
             />
-            <p className="text-[11px] text-slate-400">
+            <p className="text-xs text-gray-500 mt-1">
               Digite exatamente como aparece no sistema/portal da empresa.
             </p>
           </div>
 
-          <div className="space-y-1">
-            <label className="text-xs font-medium text-slate-200">
+          <div>
+            <label className="block text-sm mb-1">
               Print da tela do portal (opcional)
             </label>
             <input
               type="file"
               accept="image/*"
-              className="w-full text-xs text-slate-300 file:mr-3 file:rounded-md file:border-0 file:bg-red-500 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-white hover:file:bg-red-600"
-              onChange={(e) =>
-                setScreenshot(e.target.files?.[0] ?? null)
-              }
+              onChange={handleFileChange}
+              className="w-full text-sm text-gray-300"
             />
-            <p className="text-[11px] text-slate-400">
-              Envie um print mostrando o nome do representante no portal. Isso ajuda a
-              validar seu acesso mais rápido.
+            <p className="text-xs text-gray-500 mt-1">
+              Envie um print mostrando o nome do representante no
+              portal. Isso ajuda a validar seu acesso mais rápido.
             </p>
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="mt-2 w-full rounded-lg bg-red-500 py-2 text-sm font-semibold text-white hover:bg-red-600 disabled:cursor-not-allowed disabled:opacity-70"
+            className={`w-full mt-4 rounded-md px-4 py-2 text-sm font-semibold
+              ${
+                loading
+                  ? "bg-red-900 cursor-not-allowed"
+                  : "bg-red-600 hover:bg-red-700 cursor-pointer"
+              } transition`}
           >
             {loading ? "Enviando..." : "Criar conta"}
           </button>
         </form>
 
-        <p className="mt-4 text-center text-xs text-slate-400">
+        <p className="mt-4 text-center text-xs text-gray-400">
           Já tem conta?{" "}
-          <a href="/login" className="text-red-400 hover:text-red-300">
+          <a href="/login" className="text-red-400 hover:underline">
             Fazer login
           </a>
         </p>
-      </main>
-    </div>
+      </div>
+    </main>
   );
 }
